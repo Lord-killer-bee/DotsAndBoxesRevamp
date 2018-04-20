@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ObjectFactory;
+using Logger;
 
 namespace DnBGame
 {
@@ -36,6 +37,9 @@ namespace DnBGame
             InitializeDimensions();
             ArrangeLines();
             ArrangeBoxes();
+
+			GameEventManager.TriggerLevelCreated();
+			GameLogger.LogMessage("Level Created!!");
         }
 
         #region Level setup

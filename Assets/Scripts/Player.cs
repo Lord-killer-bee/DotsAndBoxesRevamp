@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Logger;
+using ObjectFactory;
 
 namespace DnBGame
 {
@@ -8,7 +10,7 @@ namespace DnBGame
     public class Player
     {
 
-        private string m_Name;
+        private unsafe string m_Name;
         private int m_Score;
         private GameEnums.EPlayerType m_PlayerType;
         private bool m_IsPlayerTurn;
@@ -20,6 +22,8 @@ namespace DnBGame
             m_PlayerType = playerType;
             m_Score = 0;
             m_PlayerColor = color;
+
+			GameLogger.LogMessage(name + " Created!!");
         }
 
         public string GetName()
@@ -50,6 +54,7 @@ namespace DnBGame
         public void SetPlayerTurn(bool status)
         {
             m_IsPlayerTurn = status;
+			GameLogger.LogMessage(m_Name + " Turn: " + status);
         }
 
         public Color GetPlayerColor()
