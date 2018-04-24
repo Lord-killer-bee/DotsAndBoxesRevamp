@@ -8,11 +8,11 @@ namespace DnBGame
     public class Box : MonoBehaviour
     {
 
-		private int m_Score, m_ChainID;
+		private int m_Score, m_BoxID, m_ChainID;
         private GameObject m_Box;
 		private Image m_BoxImage;
 
-        public void Initialize(Vector3 position, Vector2 size, Vector2 anchorMin, Vector2 anchorMax, GameObject panel)
+        public void Initialize(Vector3 position, Vector2 size, Vector2 anchorMin, Vector2 anchorMax, int ID, GameObject panel)
         {
             m_Box = this.gameObject;
             m_Box.transform.SetParent(panel.transform);
@@ -29,18 +29,39 @@ namespace DnBGame
             m_Box.SetActive(false);
 
 			m_Score = 0;
+            m_BoxID = ID;
         }
 
-		public void ActivateBox(Color color)
+		public void AddScore()
 		{
-			AssignColorToBox(color);
-			m_Box.SetActive(true);
+            m_Score++;
+
+            if (m_Score == 4)
+            {
+                ActivateBox(ReferenceRegistry.instance.GetGameManager().activePlayer.GetPlayerColor());
+            }
 		}
+
+        private void ActivateBox(Color color)
+        {
+            AssignColorToBox(color);
+            m_Box.SetActive(true);
+        }
 
 		private void AssignColorToBox(Color color)
 		{
 			m_BoxImage.color = color;
 		}
+
+        public int GetBoxID()
+        {
+            return m_BoxID;
+        }
+
+        public int GetScore()
+        {
+            return m_Score;
+        }
 
     }
 }

@@ -12,8 +12,8 @@ namespace DnBGame
 
 		private Player m_Player_1, m_Player_2;
 
-		public static Player activePlayer { get;  private set;}
-		public static Player inactivePlayer { get; private set; }
+		public Player activePlayer { get;  private set;}
+		public Player inactivePlayer { get; private set; }
 
 		protected bool isPlayer1Turn;
 
@@ -22,17 +22,7 @@ namespace DnBGame
 			GameLogger.SetLogStatus(GameLogger.ELoggingStatus.ENABLE_LOGGING);
 
 			GameEventManager.LevelCreated += CreatePlayers;
-			GameEventManager.LinePlaced += PlayerLinePlaced;
-		}
-
-		void Start()
-		{
-
-		}
-
-		void Update()
-		{
-
+			GameEventManager.BoxScoredToFour += BoxScoresUpdatedSwitchOrStayPlayers;
 		}
 
 		void SetInitiatingPlayer()
@@ -82,9 +72,10 @@ namespace DnBGame
 			SetInitiatingPlayer();
 		}
 
-		void PlayerLinePlaced()
+		void BoxScoresUpdatedSwitchOrStayPlayers(bool status)
 		{
-			SwitchPlayers();
+            if(!status)
+			    SwitchPlayers();
 		}
 	}
 }
