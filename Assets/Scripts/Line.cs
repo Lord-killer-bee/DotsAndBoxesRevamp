@@ -16,7 +16,7 @@ namespace DnBGame
         private Button m_ClickableButton;
 		private Image m_PressedImage;
 
-		private bool m_JustActive;
+		private bool m_JustActive, m_IsOpen = true;
 
 		public void Initialize(Vector3 position, Vector2 size, Vector2 anchorMin, Vector2 anchorMax, GameStructs.LineID lineID, GameObject panel)
         {
@@ -53,15 +53,29 @@ namespace DnBGame
         private void OnClick()
         {
 			m_ClickableButton.enabled = false;
+            m_IsOpen = false;
 			AssignColorToLine(ReferenceRegistry.instance.GetGameManager().activePlayer.GetPlayerColor());
 			GameEventManager.TriggerLinePlaced(m_lineID);
 
 			SetLineToActive();
 		}
 
+        #region Public Getters
+
         public GameStructs.LineID GetLineID()
         {
             return m_lineID;
+        }
+
+        public bool IsLineActive()
+        {
+            return m_JustActive;
+        }
+
+        //Open - Line is still placeable, not Open - Line is already placed
+        public bool IsLineOpen()
+        {
+            return m_IsOpen;
         }
 
         private void SetLineToActive()
@@ -79,16 +93,10 @@ namespace DnBGame
 			}
 		}
 
-        public bool IsLineActive()
-        {
-            return m_JustActive;
-        }
-
         private void AssignColorToLine(Color color)
         {
             m_PressedImage.color = color;
         }
-
         
     }
 }

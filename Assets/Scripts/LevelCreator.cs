@@ -33,9 +33,9 @@ namespace DnBGame
         private List<Line> m_ListOfLinesHorizontal = new List<Line>();
         private List<Line> m_ListOfLinesVertical = new List<Line>();
 
-        public Dictionary<int, GameStructs.NodeData> levelNodeData = new Dictionary<int, GameStructs.NodeData>();
-        public Dictionary<GameStructs.LineID, int[]> affectedBoxesHorizontal = new Dictionary<GameStructs.LineID, int[]>();
-        public Dictionary<GameStructs.LineID, int[]> affectedBoxesVertical = new Dictionary<GameStructs.LineID, int[]>();
+        private Dictionary<int, GameStructs.NodeData> m_LevelNodeData = new Dictionary<int, GameStructs.NodeData>();
+        private Dictionary<GameStructs.LineID, int[]> m_AffectedBoxesHorizontal = new Dictionary<GameStructs.LineID, int[]>();
+        private Dictionary<GameStructs.LineID, int[]> m_AffectedBoxesVertical = new Dictionary<GameStructs.LineID, int[]>();
 
         private void Awake()
         {
@@ -157,6 +157,21 @@ namespace DnBGame
             return m_ListOfLinesVertical;
         }
 
+        public Dictionary<int, GameStructs.NodeData> GetLevelNodeData()
+        {
+            return m_LevelNodeData;
+        }
+
+        public Dictionary<GameStructs.LineID, int[]> GetAffectedBoxesHorizontal()
+        {
+            return m_AffectedBoxesHorizontal;
+        }
+
+        public Dictionary<GameStructs.LineID, int[]> GetAffectedBoxesVertical()
+        {
+            return m_AffectedBoxesVertical;
+        }
+
         #endregion
 
         #region Private Getters
@@ -198,7 +213,7 @@ namespace DnBGame
             {
                 nodeIndex = m_ListOfBoxes[i].GetBoxID();
 
-                levelNodeData.Add(nodeIndex, new GameStructs.NodeData()
+                m_LevelNodeData.Add(nodeIndex, new GameStructs.NodeData()
                 {
                     topLineID = new GameStructs.LineID { ID = nodeIndex, rotation = GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE },
                     rightLineID = new GameStructs.LineID { ID = (row + (NoOfRowsOrColumns - 1) * column) + (NoOfRowsOrColumns - 1), rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE },
@@ -206,7 +221,7 @@ namespace DnBGame
                     leftLineID = new GameStructs.LineID { ID = row + (NoOfRowsOrColumns - 1) * column, rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE }
                 });
 
-                GameLogger.LogMessage(i.ToString() + " : " + "[" + levelNodeData[i].topLineID.ToString() + "," + levelNodeData[i].rightLineID.ToString() + "," + levelNodeData[i].bottomLineID.ToString() + "," + levelNodeData[i].leftLineID.ToString() + "]");
+                GameLogger.LogMessage(i.ToString() + " : " + "[" + m_LevelNodeData[i].topLineID.ToString() + "," + m_LevelNodeData[i].rightLineID.ToString() + "," + m_LevelNodeData[i].bottomLineID.ToString() + "," + m_LevelNodeData[i].leftLineID.ToString() + "]");
 
                 column++;
 
@@ -229,18 +244,18 @@ namespace DnBGame
 
                 if (row == 0)
                 {
-                    affectedBoxesHorizontal.Add(horizontalID, new int[]{ i });
-                    affectedBoxesVertical.Add(verticalID, new int[] { row + (NoOfRowsOrColumns - 1) * column });
+                    m_AffectedBoxesHorizontal.Add(horizontalID, new int[]{ i });
+                    m_AffectedBoxesVertical.Add(verticalID, new int[] { row + (NoOfRowsOrColumns - 1) * column });
                 }
                 else if(row > 0 && row < NoOfRowsOrColumns - 1)
                 {
-                    affectedBoxesHorizontal.Add(horizontalID, new int[] { i, i - (NoOfRowsOrColumns - 1) });
-                    affectedBoxesVertical.Add(verticalID, new int[] { row + ((NoOfRowsOrColumns - 1) * column) - 1, row + ((NoOfRowsOrColumns - 1) * column) });
+                    m_AffectedBoxesHorizontal.Add(horizontalID, new int[] { i, i - (NoOfRowsOrColumns - 1) });
+                    m_AffectedBoxesVertical.Add(verticalID, new int[] { row + ((NoOfRowsOrColumns - 1) * column) - 1, row + ((NoOfRowsOrColumns - 1) * column) });
                 }
                 else if(row == NoOfRowsOrColumns - 1)
                 {
-                    affectedBoxesHorizontal.Add(horizontalID, new int[] { i - (NoOfRowsOrColumns - 1) });
-                    affectedBoxesVertical.Add(verticalID, new int[] { row + ((NoOfRowsOrColumns - 1) * column) - 1 });
+                    m_AffectedBoxesHorizontal.Add(horizontalID, new int[] { i - (NoOfRowsOrColumns - 1) });
+                    m_AffectedBoxesVertical.Add(verticalID, new int[] { row + ((NoOfRowsOrColumns - 1) * column) - 1 });
                 }
 
                 column++;
@@ -269,9 +284,9 @@ namespace DnBGame
             {
                 case GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE:
 
-                    for (int i = 0; i < affectedBoxesHorizontal[lineID].Length; i++)
+                    for (int i = 0; i < m_AffectedBoxesHorizontal[lineID].Length; i++)
                     {
-                        Box temp = m_ListOfBoxes[affectedBoxesHorizontal[lineID][i]];
+                        Box temp = m_ListOfBoxes[m_AffectedBoxesHorizontal[lineID][i]];
                         temp.AddScore();
 
                         if (temp.GetScore() == 4)
@@ -281,9 +296,9 @@ namespace DnBGame
                     break;
                 case GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE:
 
-                    for (int i = 0; i < affectedBoxesVertical[lineID].Length; i++)
+                    for (int i = 0; i < m_AffectedBoxesVertical[lineID].Length; i++)
                     {
-                        Box temp = m_ListOfBoxes[affectedBoxesVertical[lineID][i]];
+                        Box temp = m_ListOfBoxes[m_AffectedBoxesVertical[lineID][i]];
                         temp.AddScore();
 
                         if (temp.GetScore() == 4)
