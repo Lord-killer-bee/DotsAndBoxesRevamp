@@ -17,5 +17,10 @@ namespace DnBGame
             public GameEnums.E_LineRotationCode rotation;
         }
 
+		public struct NeighbouringBoxes
+		{
+			public int topBoxID, rightBoxID, bottomBoxID, leftBoxID;
+		}
+
     }
 }

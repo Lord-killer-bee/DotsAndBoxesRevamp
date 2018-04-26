@@ -8,7 +8,7 @@ namespace DnBGame
     public class Box : MonoBehaviour
     {
 
-		private int m_Score, m_BoxID, m_ChainID;
+		private int m_Score, m_BoxID, m_ChainID = GameConstants.INVALID_ID;
         private GameObject m_Box;
 		private Image m_BoxImage;
 
@@ -53,7 +53,14 @@ namespace DnBGame
 			m_BoxImage.color = color;
 		}
 
-        public int GetBoxID()
+		public void SetChainID(int chainID)
+		{
+			m_ChainID = chainID;
+		}
+
+		#region Public Getters
+
+		public int GetBoxID()
         {
             return m_BoxID;
         }
@@ -63,5 +70,20 @@ namespace DnBGame
             return m_Score;
         }
 
-    }
+		public int GetChainID()
+		{
+			return m_ChainID;
+		}
+
+		public bool HasChainID()
+		{
+			if (m_ChainID == GameConstants.INVALID_ID)
+				return false;
+			else
+				return true;
+		}
+
+#endregion
+
+	}
 }

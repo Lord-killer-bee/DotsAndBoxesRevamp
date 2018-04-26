@@ -30,12 +30,13 @@ namespace DnBGame
         #endregion
 
         private List<Box> m_ListOfBoxes = new List<Box>();
-        private List<Line> m_ListOfLinesHorizontal = new List<Line>();
-        private List<Line> m_ListOfLinesVertical = new List<Line>();
+        private Dictionary<GameStructs.LineID, Line> m_ListOfLinesHorizontal = new Dictionary<GameStructs.LineID, Line>();
+        private Dictionary<GameStructs.LineID, Line> m_ListOfLinesVertical = new Dictionary<GameStructs.LineID, Line>();
 
         private Dictionary<int, GameStructs.NodeData> m_LevelNodeData = new Dictionary<int, GameStructs.NodeData>();
         private Dictionary<GameStructs.LineID, int[]> m_AffectedBoxesHorizontal = new Dictionary<GameStructs.LineID, int[]>();
         private Dictionary<GameStructs.LineID, int[]> m_AffectedBoxesVertical = new Dictionary<GameStructs.LineID, int[]>();
+		private Dictionary<int, GameStructs.NeighbouringBoxes> m_NeighbouringBoxesList = new Dictionary<int, GameStructs.NeighbouringBoxes>();
 
         private void Awake()
         {
@@ -49,14 +50,15 @@ namespace DnBGame
             ArrangeBoxes();
             GenerateNodeData();
             GenerateAffectedBoxesData();
+			GenerateNeighbouringBoxesList();
 
 			GameEventManager.TriggerLevelCreated();
 			GameLogger.LogMessage("Level Created!!");
         }
 
-        #region Level setup
+		#region Level setup
 
-        private void InitializeDimensions()
+		private void InitializeDimensions()
         {
             m_dotWidth = m_dotHeight = dotDimension;
             m_lineWidth = GetLineWidth();
@@ -103,30 +105,35 @@ namespace DnBGame
             {
                 if (j < NoOfRowsOrColumns - 1)
                 {
-                    Line lineHorizontal = MonoObjectFactory<Line>.CreateInstance( new ObjectConstructMaterials()
-                    {
-                        prefab = linePrefab,
+					GameStructs.LineID lineID = new GameStructs.LineID { ID = i, rotation = GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE };
+
+					Line lineHorizontal = MonoObjectFactory<Line>.CreateInstance(new ObjectConstructMaterials()
+					{ 					
+						prefab = linePrefab,
                         parameters = new object[] {  new Vector3((j + 0.5f) * (m_lineWidth + m_dotWidth), -k * (m_lineHeight + m_dotHeight), 1),
                                                  new Vector2(m_lineWidth, m_dotHeight),
                                                  new Vector2(((1 - BoardPercentage) / 2), ((1 + BoardPercentage) / 2)),
                                                  new Vector2(((1 - BoardPercentage) / 2), ((1 + BoardPercentage) / 2)),
-                                                 new GameStructs.LineID {ID = i, rotation =  GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE},
+                                                 lineID,
                                                  boardPanel}
                     });
 
-                    Line lineVertical = MonoObjectFactory<Line>.CreateInstance( new ObjectConstructMaterials()
+					m_ListOfLinesHorizontal.Add(lineID, lineHorizontal);
+
+					lineID.rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE;
+
+					Line lineVertical = MonoObjectFactory<Line>.CreateInstance( new ObjectConstructMaterials()
                     {
                         prefab = linePrefab,
                         parameters = new object[] { new Vector3(k * (m_lineWidth + m_dotWidth), -(j + 0.5f) * (m_lineHeight + m_dotHeight), 1),
                                                 new Vector2(m_lineHeight, m_dotWidth),
                                                 new Vector2(((1 - BoardPercentage) / 2), ((1 + BoardPercentage) / 2)),
                                                 new Vector2(((1 - BoardPercentage) / 2), ((1 + BoardPercentage) / 2)),
-                                                new GameStructs.LineID {ID = i, rotation =  GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE},
+                                                lineID,
                                                 boardPanel}
                     });
-
-                    m_ListOfLinesHorizontal.Add(lineHorizontal);
-                    m_ListOfLinesVertical.Add(lineVertical);
+              
+                    m_ListOfLinesVertical.Add(lineID, lineVertical);
 
 
                     j++;
@@ -147,12 +154,12 @@ namespace DnBGame
             return m_ListOfBoxes;
         }
 
-        public List<Line> GetHorizontalListOfLines()
+        public Dictionary<GameStructs.LineID, Line> GetHorizontalListOfLines()
         {
             return m_ListOfLinesHorizontal;
         }
 
-        public List<Line> GetVerticalListOfLines()
+        public Dictionary<GameStructs.LineID, Line> GetVerticalListOfLines()
         {
             return m_ListOfLinesVertical;
         }
@@ -172,10 +179,15 @@ namespace DnBGame
             return m_AffectedBoxesVertical;
         }
 
-        #endregion
+		public Dictionary<int, GameStructs.NeighbouringBoxes> GetNeighbouringBoxesList()
+		{
+			return m_NeighbouringBoxesList;
+		}
 
-        #region Private Getters
-        private int GetNoOfLines(int NoOfRowsOrColumns)
+		#endregion
+
+		#region Private Getters
+		private int GetNoOfLines(int NoOfRowsOrColumns)
         {
             return 2 * NoOfRowsOrColumns * (NoOfRowsOrColumns - 1);
         }
@@ -268,9 +280,119 @@ namespace DnBGame
             }          
         }
 
-        #endregion
+		private void GenerateNeighbouringBoxesList()
+		{
+			int nodeIndex, row = 0, column = 0;
 
-        private void LinePlacedDoStuff(GameStructs.LineID lineID)
+			for (int i = 0; i < m_ListOfBoxes.Count; i++)
+			{
+				nodeIndex = m_ListOfBoxes[i].GetBoxID();
+
+				if (row == 0 && column == 0)
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = GameConstants.INVALID_ID,
+						rightBoxID = nodeIndex + 1,
+						bottomBoxID = nodeIndex + (NoOfRowsOrColumns - 1),
+						leftBoxID = GameConstants.INVALID_ID				
+					});
+				}
+				else if (row == 0 && column == NoOfRowsOrColumns - 2)
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = GameConstants.INVALID_ID,
+						rightBoxID = GameConstants.INVALID_ID,
+						bottomBoxID = nodeIndex + (NoOfRowsOrColumns - 1),
+						leftBoxID = nodeIndex - 1
+					});
+				}
+				else if (row == NoOfRowsOrColumns - 2 && column == NoOfRowsOrColumns - 2)
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = nodeIndex - (NoOfRowsOrColumns - 1),
+						rightBoxID = GameConstants.INVALID_ID,
+						bottomBoxID = GameConstants.INVALID_ID,
+						leftBoxID = nodeIndex - 1
+					});
+				}
+				else if (row == NoOfRowsOrColumns - 2 && column == 0)
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = nodeIndex - (NoOfRowsOrColumns - 1),
+						rightBoxID = nodeIndex + 1,
+						bottomBoxID = GameConstants.INVALID_ID,
+						leftBoxID = GameConstants.INVALID_ID
+					});
+				}
+				else if(row == 0 && (column > 0 && column < NoOfRowsOrColumns - 2))
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = GameConstants.INVALID_ID,
+						rightBoxID = nodeIndex + 1,
+						bottomBoxID = nodeIndex + (NoOfRowsOrColumns - 1),
+						leftBoxID = nodeIndex - 1
+					});
+				}
+				else if (row == NoOfRowsOrColumns - 2 && (column > 0 && column < NoOfRowsOrColumns - 2))
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = nodeIndex - (NoOfRowsOrColumns - 1),
+						rightBoxID = nodeIndex + 1,
+						bottomBoxID = GameConstants.INVALID_ID,
+						leftBoxID = nodeIndex - 1
+					});
+				}
+				else if (column == 0 && (row > 0 && row < NoOfRowsOrColumns - 2))
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = nodeIndex - (NoOfRowsOrColumns - 1),
+						rightBoxID = nodeIndex + 1,
+						bottomBoxID = nodeIndex + (NoOfRowsOrColumns - 1),
+						leftBoxID = GameConstants.INVALID_ID
+					});
+				}
+				else if (column == NoOfRowsOrColumns - 2 && (row > 0 && row < NoOfRowsOrColumns - 2))
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = nodeIndex - (NoOfRowsOrColumns - 1),
+						rightBoxID = GameConstants.INVALID_ID,
+						bottomBoxID = nodeIndex + (NoOfRowsOrColumns - 1),
+						leftBoxID = nodeIndex - 1
+					});
+				}
+				else
+				{
+					m_NeighbouringBoxesList.Add(nodeIndex, new GameStructs.NeighbouringBoxes
+					{
+						topBoxID = nodeIndex - (NoOfRowsOrColumns - 1),
+						rightBoxID = nodeIndex + 1,
+						bottomBoxID = nodeIndex + (NoOfRowsOrColumns - 1),
+						leftBoxID = nodeIndex - 1
+					});
+				}
+
+				column++;
+
+				if (column >= NoOfRowsOrColumns - 2)
+				{
+					column = 0;
+					row++;
+				}
+			}
+		}
+
+
+		#endregion
+
+		private void LinePlacedDoStuff(GameStructs.LineID lineID)
         {
             LinePlacedDeactivateOldLine();
             IncrementAffectedBoxScores(lineID);
@@ -316,16 +438,16 @@ namespace DnBGame
 
         private void LinePlacedDeactivateOldLine()
         {
-            foreach (Line line in m_ListOfLinesHorizontal)
+            foreach (KeyValuePair<GameStructs.LineID, Line> pair in m_ListOfLinesHorizontal)
             {
-                if (line.IsLineActive())
-                    line.SetLineInactive();                  
+                if (pair.Value.IsLineActive())
+					pair.Value.SetLineInactive();                  
             }
 
-            foreach (Line line in m_ListOfLinesVertical)
+            foreach (KeyValuePair<GameStructs.LineID, Line> pair in m_ListOfLinesVertical)
             {
-                if (line.IsLineActive())
-                    line.SetLineInactive();
+                if (pair.Value.IsLineActive())
+					pair.Value.SetLineInactive();
             }
         }
     }

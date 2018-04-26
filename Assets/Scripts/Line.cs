@@ -78,7 +78,9 @@ namespace DnBGame
             return m_IsOpen;
         }
 
-        private void SetLineToActive()
+#endregion
+
+		private void SetLineToActive()
         {
 			highlightImage.SetActive(true);
 			m_JustActive = true;
