@@ -17,10 +17,18 @@ namespace Logger
 
 					Debug.Log(message);
 
-					break;
-				case ELoggingStatus.DISABLE_LOGGING:
-					break;
-				default:
+					break;			
+			}
+		}
+
+		public static void LogError(string message)
+		{
+			switch (m_logStatus)
+			{
+				case ELoggingStatus.ENABLE_LOGGING:
+
+					Debug.LogError(message);
+
 					break;
 			}
 		}

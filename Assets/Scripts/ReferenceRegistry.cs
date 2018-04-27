@@ -21,6 +21,8 @@ namespace DnBGame {
             {
                 instance = this;
             }
+
+			GameEventManager.TriggerReferencesRegistered();
         }
 
         public LevelCreator GetLevelCreator()

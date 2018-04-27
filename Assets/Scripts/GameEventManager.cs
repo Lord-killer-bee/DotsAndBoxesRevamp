@@ -12,11 +12,17 @@ namespace DnBGame
         public delegate void BoolParamGameplayEvents(bool status);
         public delegate void ButtonPressGameplayEvents(GameStructs.LineID lineID);
 
-        public static event NoParamGameplayEvents LevelCreated;
+        public static event NoParamGameplayEvents ReferencesRegistered, LevelCreated;
         public static event ButtonPressGameplayEvents LinePlaced;
         public static event BoolParamGameplayEvents BoxScoredToFour;
         public static event IntParamGameplayEvents BoxScoreValidForChain;
 
+
+		public static void TriggerReferencesRegistered()
+		{
+			if (ReferencesRegistered != null)
+				ReferencesRegistered();
+		}
 
         public static void TriggerLevelCreated()
 		{

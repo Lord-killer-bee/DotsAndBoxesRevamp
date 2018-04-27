@@ -295,7 +295,7 @@ namespace DnBGame
 						topBoxID = GameConstants.INVALID_ID,
 						rightBoxID = nodeIndex + 1,
 						bottomBoxID = nodeIndex + (NoOfRowsOrColumns - 1),
-						leftBoxID = GameConstants.INVALID_ID				
+						leftBoxID = GameConstants.INVALID_ID
 					});
 				}
 				else if (row == 0 && column == NoOfRowsOrColumns - 2)
@@ -381,7 +381,7 @@ namespace DnBGame
 
 				column++;
 
-				if (column >= NoOfRowsOrColumns - 2)
+				if (column > NoOfRowsOrColumns - 2)
 				{
 					column = 0;
 					row++;
@@ -401,6 +401,7 @@ namespace DnBGame
         private void IncrementAffectedBoxScores(GameStructs.LineID lineID)
         {
             int boxActivatedCounter = 0;
+			List<Box> freshlyAffectedBoxes = new List<Box>();
 
             switch (lineID.rotation)
             {
@@ -411,8 +412,10 @@ namespace DnBGame
                         Box temp = m_ListOfBoxes[m_AffectedBoxesHorizontal[lineID][i]];
                         temp.AddScore();
 
-                        if (temp.GetScore() == 4)
-                            boxActivatedCounter++;
+						if (temp.GetScore() == 4)
+							boxActivatedCounter++;
+		
+							freshlyAffectedBoxes.Add(temp);
                     }
 
                     break;
@@ -425,15 +428,24 @@ namespace DnBGame
 
                         if (temp.GetScore() == 4)
                             boxActivatedCounter++;
-                    }
+
+							freshlyAffectedBoxes.Add(temp);
+					}
 
                     break;
             }
+
+
 
             if(boxActivatedCounter >= 1)
                 GameEventManager.TriggerBoxScoredToFour(true);
             else
                 GameEventManager.TriggerBoxScoredToFour(false);
+
+			foreach (Box box in freshlyAffectedBoxes)
+			{
+				GameEventManager.TriggerBoxScoreValidForChain(box.GetBoxID());
+			}
         }
 
         private void LinePlacedDeactivateOldLine()
