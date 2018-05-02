@@ -10,6 +10,8 @@ namespace DnBGame
 	{
 		public GameEnums.EPlayerType player1Type, player2Type;
 
+        public GameEnums.EGameDifficultyMode difficultyMode;
+
 		private Player m_Player_1, m_Player_2;
 
 		public Player activePlayer { get;  private set;}
@@ -22,7 +24,7 @@ namespace DnBGame
 			GameLogger.SetLogStatus(GameLogger.ELoggingStatus.ENABLE_LOGGING);
 
 			GameEventManager.LevelCreated += CreatePlayers;
-			GameEventManager.BoxScoredToFour += BoxScoresUpdatedSwitchOrStayPlayers;
+			GameEventManager.SwitchPlayers += SwitchPlayers;
 		}
 
 		void SetInitiatingPlayer()
@@ -62,6 +64,8 @@ namespace DnBGame
 		{
 			activePlayer.SetPlayerTurn(true);
 			inactivePlayer.SetPlayerTurn(false);
+
+            GameEventManager.TriggerPlayerTurnsUpdated();
 		}
 
 		void CreatePlayers()
@@ -70,12 +74,9 @@ namespace DnBGame
 			m_Player_2 = NonMonoObjectFactory<Player>.CreateInstance(() => new Player("Player 2", new Color(0, 0, 1, 1), player2Type));
 
 			SetInitiatingPlayer();
-		}
 
-		void BoxScoresUpdatedSwitchOrStayPlayers(bool status)
-		{
-            if(!status)
-			    SwitchPlayers();
+            GameEventManager.TriggerPlayersCreated();
 		}
+		
 	}
 }

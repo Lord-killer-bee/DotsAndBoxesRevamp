@@ -73,7 +73,7 @@ namespace DnBGame
             int k = 0;
             for (int i = 0; i < (NoOfRowsOrColumns - 1) * (NoOfRowsOrColumns - 1); i++)
             {
-                Box box = MonoObjectFactory<Box>.CreateInstance(new ObjectConstructMaterials()
+                Box box = MonoObjectFactory<Box>.CreateInstance(new MonoObjectConstructMaterials()
                 {
                     prefab = boxPrefab,
                     parameters = new object[]{ new Vector3((m_lineWidth + m_dotWidth) * (j + 0.5f), (-m_lineHeight - m_dotHeight) * (k + 0.5f), 0),
@@ -107,7 +107,7 @@ namespace DnBGame
                 {
 					GameStructs.LineID lineID = new GameStructs.LineID { ID = i, rotation = GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE };
 
-					Line lineHorizontal = MonoObjectFactory<Line>.CreateInstance(new ObjectConstructMaterials()
+					Line lineHorizontal = MonoObjectFactory<Line>.CreateInstance(new MonoObjectConstructMaterials()
 					{ 					
 						prefab = linePrefab,
                         parameters = new object[] {  new Vector3((j + 0.5f) * (m_lineWidth + m_dotWidth), -k * (m_lineHeight + m_dotHeight), 1),
@@ -122,7 +122,7 @@ namespace DnBGame
 
 					lineID.rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE;
 
-					Line lineVertical = MonoObjectFactory<Line>.CreateInstance( new ObjectConstructMaterials()
+					Line lineVertical = MonoObjectFactory<Line>.CreateInstance( new MonoObjectConstructMaterials()
                     {
                         prefab = linePrefab,
                         parameters = new object[] { new Vector3(k * (m_lineWidth + m_dotWidth), -(j + 0.5f) * (m_lineHeight + m_dotHeight), 1),
@@ -438,9 +438,9 @@ namespace DnBGame
 
 
             if(boxActivatedCounter >= 1)
-                GameEventManager.TriggerBoxScoredToFour(true);
+                GameEventManager.TriggerBoxScoredToFour();
             else
-                GameEventManager.TriggerBoxScoredToFour(false);
+                GameEventManager.TriggerSwitchPlayers();
 
 			foreach (Box box in freshlyAffectedBoxes)
 			{

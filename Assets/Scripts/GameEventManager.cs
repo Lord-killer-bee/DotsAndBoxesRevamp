@@ -12,9 +12,8 @@ namespace DnBGame
         public delegate void BoolParamGameplayEvents(bool status);
         public delegate void ButtonPressGameplayEvents(GameStructs.LineID lineID);
 
-        public static event NoParamGameplayEvents ReferencesRegistered, LevelCreated;
+        public static event NoParamGameplayEvents ReferencesRegistered, SwitchPlayers, BoxScoredToFour, LevelCreated, PlayersCreated, PlayerTurnsUpdated;
         public static event ButtonPressGameplayEvents LinePlaced;
-        public static event BoolParamGameplayEvents BoxScoredToFour;
         public static event IntParamGameplayEvents BoxScoreValidForChain;
 
 
@@ -23,6 +22,18 @@ namespace DnBGame
 			if (ReferencesRegistered != null)
 				ReferencesRegistered();
 		}
+
+        public static void TriggerSwitchPlayers()
+        {
+            if (SwitchPlayers != null)
+                SwitchPlayers();
+        }
+
+        public static void TriggerPlayersCreated()
+        {
+            if (PlayersCreated != null)
+                PlayersCreated();
+        }
 
         public static void TriggerLevelCreated()
 		{
@@ -36,16 +47,22 @@ namespace DnBGame
 				LinePlaced(lineID);
 		}
 
-        public static void TriggerBoxScoredToFour(bool status)
+        public static void TriggerBoxScoredToFour()
         {
             if(BoxScoredToFour != null)
-                BoxScoredToFour(status);
+                BoxScoredToFour();
         }
 
         public static void TriggerBoxScoreValidForChain(int param)
         {
             if (BoxScoreValidForChain != null)
                 BoxScoreValidForChain(param);
+        }
+
+        public static void TriggerPlayerTurnsUpdated()
+        {
+            if (PlayerTurnsUpdated != null)
+                PlayerTurnsUpdated();
         }
 
     }

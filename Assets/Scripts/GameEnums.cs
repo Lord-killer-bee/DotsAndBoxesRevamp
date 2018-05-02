@@ -20,5 +20,20 @@ namespace DnBGame
             PLAYER_AI
         }		
 
+        public enum EGameDifficultyMode
+        {
+            EASY,
+            MEDIUM,
+            HARD
+        }
+
+        public enum EAIBehaviour
+        {
+            RANDOM_PLACEMENT,
+            BASIC_CHAINING,
+            PRIORITY_CHAINING,
+            SACRIFICIAL_CHAINING
+        }
+
     }
 }

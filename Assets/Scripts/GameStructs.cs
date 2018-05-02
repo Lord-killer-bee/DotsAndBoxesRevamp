@@ -22,5 +22,10 @@ namespace DnBGame
 			public int topBoxID, rightBoxID, bottomBoxID, leftBoxID;
 		}
 
+        public struct AIAlgorithmPackage
+        {
+            public GameEnums.EAIBehaviour tier1Algorithm, tier2Algorithm;
+        }
+
     }
 }

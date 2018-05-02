@@ -10,7 +10,7 @@ namespace ObjectFactory
     {
         #region Instance creation
 
-        public static T CreateInstance(ObjectConstructMaterials materials)
+        public static T CreateInstance(MonoObjectConstructMaterials materials)
         {
             return InstantiateNInitialize(materials);
         }
@@ -21,7 +21,7 @@ namespace ObjectFactory
 
         static readonly Dictionary<string, T> singletonMap = new Dictionary<string, T>();
 
-        public static void RegisterSingleton(string id, ObjectConstructMaterials materials)
+        public static void RegisterSingleton(string id, MonoObjectConstructMaterials materials)
         {
             if (!singletonMap.ContainsKey(id))
             {
@@ -49,7 +49,7 @@ namespace ObjectFactory
 
         #region Private utility methods
 
-        private static T InstantiateNInitialize(ObjectConstructMaterials material)
+        private static T InstantiateNInitialize(MonoObjectConstructMaterials material)
         {
             GameObject temp = Instantiate(material.prefab, Vector3.zero, Quaternion.identity) as GameObject;
             temp.GetComponent<T>().GetType().GetMethod("Initialize").Invoke(temp.GetComponent<T>(), material.parameters);
@@ -61,7 +61,7 @@ namespace ObjectFactory
 
     }
 
-    public struct ObjectConstructMaterials
+    public struct MonoObjectConstructMaterials
     {
         public GameObject prefab;
         public object[] parameters;
