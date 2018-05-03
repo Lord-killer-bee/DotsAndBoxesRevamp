@@ -8,7 +8,8 @@ namespace DnBGame {
     public class AIManager : MonoBehaviour {
 
         private Dictionary<GameEnums.EGameDifficultyMode, GameStructs.AIAlgorithmPackage> m_DifficultyToAlgorithmMap = new Dictionary<GameEnums.EGameDifficultyMode, GameStructs.AIAlgorithmPackage>();
-        private GameManager m_gameManager;
+
+		private GameManager m_gameManager;
        
         private Player m_AIPlayer;
 
@@ -25,7 +26,13 @@ namespace DnBGame {
             SetUpDifficultyToAlgorithmsMap();
         }
 
-        private void GetAIPlayer()
+		private void GetReferences()
+		{
+			m_gameManager = ReferenceRegistry.instance.GetGameManager();
+		}
+
+
+		private void GetAIPlayer()
         {
             
         }
@@ -51,23 +58,14 @@ namespace DnBGame {
             });
         }     
 
-        private void GetReferences()
-        {
-            m_gameManager = ReferenceRegistry.instance.GetGameManager();
-        }
-
         void CheckIfAIShouldBeSetUp()
         {
-            if(m_gameManager.player1Type == GameEnums.EPlayerType.PLAYER_AI || m_gameManager.player2Type == GameEnums.EPlayerType.PLAYER_AI)
-            {
-                SetUpAI(m_gameManager.difficultyMode);
-            }
+
         }
 
         private void SetUpAI(GameEnums.EGameDifficultyMode difficultyMode)
         {
-            AIFactory.CreateInstance(m_DifficultyToAlgorithmMap[difficultyMode].tier1Algorithm);
-            AIFactory.CreateInstance(m_DifficultyToAlgorithmMap[difficultyMode].tier2Algorithm);
+
         }
 
 

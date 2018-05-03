@@ -8,7 +8,9 @@ namespace DnBGame
 {
 	public class GameManager : MonoBehaviour
 	{
-		public GameEnums.EPlayerType player1Type, player2Type;
+		private GameEnums.EPlayerType m_Player1Type, m_Player2Type;
+
+		public GameEnums.EGameMode gameMode;
 
         public GameEnums.EGameDifficultyMode difficultyMode;
 
@@ -70,8 +72,33 @@ namespace DnBGame
 
 		void CreatePlayers()
 		{
-			m_Player_1 = NonMonoObjectFactory<Player>.CreateInstance(() => new Player("Player 1", new Color(1, 0, 0, 1), player1Type));
-			m_Player_2 = NonMonoObjectFactory<Player>.CreateInstance(() => new Player("Player 2", new Color(0, 0, 1, 1), player2Type));
+			switch (gameMode)
+			{
+				case GameEnums.EGameMode.PvP:
+
+					m_Player1Type = GameEnums.EPlayerType.PLAYER_1;
+					m_Player2Type = GameEnums.EPlayerType.PLAYER_2;
+
+					m_Player_1 = NonMonoObjectFactory<Player>.CreateInstance(() => new Player("Player 1", new Color(1, 0, 0, 1), m_Player1Type));
+					m_Player_2 = NonMonoObjectFactory<Player>.CreateInstance(() => new Player("Player 2", new Color(0, 0, 1, 1), m_Player2Type));
+					break;
+				case GameEnums.EGameMode.PvAI:
+
+					m_Player1Type = GameEnums.EPlayerType.PLAYER_1;
+					m_Player2Type = GameEnums.EPlayerType.PLAYER_AI;
+					m_Player_1 = NonMonoObjectFactory<Player>.CreateInstance(() => new Player("Player 1", new Color(1, 0, 0, 1), m_Player1Type));
+					m_Player_2 = NonMonoObjectFactory<AIPlayer>.CreateInstance(() => new AIPlayer("Player 2", new Color(0, 0, 1, 1), m_Player2Type));
+
+					break;
+				case GameEnums.EGameMode.AIvAI:
+
+					m_Player1Type = GameEnums.EPlayerType.PLAYER_AI;
+					m_Player2Type = GameEnums.EPlayerType.PLAYER_AI;
+
+					break;
+			}
+
+			
 
 			SetInitiatingPlayer();
 

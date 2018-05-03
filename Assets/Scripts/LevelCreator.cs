@@ -105,7 +105,7 @@ namespace DnBGame
             {
                 if (j < NoOfRowsOrColumns - 1)
                 {
-					GameStructs.LineID lineID = new GameStructs.LineID { ID = i, rotation = GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE };
+					GameStructs.LineID lineID = new GameStructs.LineID { ID = i, rotation = GameEnums.ELineRotationCode.HORIZONTAL_ROTATION_CODE };
 
 					Line lineHorizontal = MonoObjectFactory<Line>.CreateInstance(new MonoObjectConstructMaterials()
 					{ 					
@@ -120,7 +120,7 @@ namespace DnBGame
 
 					m_ListOfLinesHorizontal.Add(lineID, lineHorizontal);
 
-					lineID.rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE;
+					lineID.rotation = GameEnums.ELineRotationCode.VERTICAL_ROTATION_CODE;
 
 					Line lineVertical = MonoObjectFactory<Line>.CreateInstance( new MonoObjectConstructMaterials()
                     {
@@ -227,10 +227,10 @@ namespace DnBGame
 
                 m_LevelNodeData.Add(nodeIndex, new GameStructs.NodeData()
                 {
-                    topLineID = new GameStructs.LineID { ID = nodeIndex, rotation = GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE },
-                    rightLineID = new GameStructs.LineID { ID = (row + (NoOfRowsOrColumns - 1) * column) + (NoOfRowsOrColumns - 1), rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE },
-                    bottomLineID = new GameStructs.LineID { ID = nodeIndex + (NoOfRowsOrColumns - 1), rotation = GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE },
-                    leftLineID = new GameStructs.LineID { ID = row + (NoOfRowsOrColumns - 1) * column, rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE }
+                    topLineID = new GameStructs.LineID { ID = nodeIndex, rotation = GameEnums.ELineRotationCode.HORIZONTAL_ROTATION_CODE },
+                    rightLineID = new GameStructs.LineID { ID = (row + (NoOfRowsOrColumns - 1) * column) + (NoOfRowsOrColumns - 1), rotation = GameEnums.ELineRotationCode.VERTICAL_ROTATION_CODE },
+                    bottomLineID = new GameStructs.LineID { ID = nodeIndex + (NoOfRowsOrColumns - 1), rotation = GameEnums.ELineRotationCode.HORIZONTAL_ROTATION_CODE },
+                    leftLineID = new GameStructs.LineID { ID = row + (NoOfRowsOrColumns - 1) * column, rotation = GameEnums.ELineRotationCode.VERTICAL_ROTATION_CODE }
                 });
 
                 GameLogger.LogMessage(i.ToString() + " : " + "[" + m_LevelNodeData[i].topLineID.ToString() + "," + m_LevelNodeData[i].rightLineID.ToString() + "," + m_LevelNodeData[i].bottomLineID.ToString() + "," + m_LevelNodeData[i].leftLineID.ToString() + "]");
@@ -251,8 +251,8 @@ namespace DnBGame
 
             for (int i = 0; i < m_ListOfLinesHorizontal.Count; i++)
             {
-                GameStructs.LineID horizontalID = new GameStructs.LineID { ID = i, rotation = GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE };
-                GameStructs.LineID verticalID = new GameStructs.LineID { ID = i, rotation = GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE };
+                GameStructs.LineID horizontalID = new GameStructs.LineID { ID = i, rotation = GameEnums.ELineRotationCode.HORIZONTAL_ROTATION_CODE };
+                GameStructs.LineID verticalID = new GameStructs.LineID { ID = i, rotation = GameEnums.ELineRotationCode.VERTICAL_ROTATION_CODE };
 
                 if (row == 0)
                 {
@@ -405,7 +405,7 @@ namespace DnBGame
 
             switch (lineID.rotation)
             {
-                case GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE:
+                case GameEnums.ELineRotationCode.HORIZONTAL_ROTATION_CODE:
 
                     for (int i = 0; i < m_AffectedBoxesHorizontal[lineID].Length; i++)
                     {
@@ -419,7 +419,7 @@ namespace DnBGame
                     }
 
                     break;
-                case GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE:
+                case GameEnums.ELineRotationCode.VERTICAL_ROTATION_CODE:
 
                     for (int i = 0; i < m_AffectedBoxesVertical[lineID].Length; i++)
                     {

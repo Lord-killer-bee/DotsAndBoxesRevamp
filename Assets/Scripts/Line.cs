@@ -35,12 +35,12 @@ namespace DnBGame
 
             m_lineID = lineID;
 
-            if (m_lineID.rotation == GameEnums.E_LineRotationCode.HORIZONTAL_ROTATION_CODE)
+            if (m_lineID.rotation == GameEnums.ELineRotationCode.HORIZONTAL_ROTATION_CODE)
             {
                 m_ClickableButton.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
                 m_ClickableButton.tag = GameConstants.TAG_HORIZONTAL;
             }
-            else if (m_lineID.rotation == GameEnums.E_LineRotationCode.VERTICAL_ROTATION_CODE)
+            else if (m_lineID.rotation == GameEnums.ELineRotationCode.VERTICAL_ROTATION_CODE)
             {
                 m_ClickableButton.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 90);
                 m_ClickableButton.tag = GameConstants.TAG_VERTICAL;

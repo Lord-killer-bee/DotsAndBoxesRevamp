@@ -14,7 +14,7 @@ namespace DnBGame
         public struct LineID
         {
             public int ID;
-            public GameEnums.E_LineRotationCode rotation;
+            public GameEnums.ELineRotationCode rotation;
         }
 
 		public struct NeighbouringBoxes

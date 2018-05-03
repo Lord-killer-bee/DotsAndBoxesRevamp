@@ -7,7 +7,14 @@ namespace DnBGame
     public static class GameEnums
     {
 
-        public enum E_LineRotationCode
+		public enum EGameMode
+		{
+			PvP,
+			PvAI,
+			AIvAI
+		}
+
+        public enum ELineRotationCode
         {
             HORIZONTAL_ROTATION_CODE,
             VERTICAL_ROTATION_CODE
