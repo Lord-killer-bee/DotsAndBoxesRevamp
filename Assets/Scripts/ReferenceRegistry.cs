@@ -14,6 +14,8 @@ namespace DnBGame {
         private ChainManager chainManager;
         [SerializeField]
         private GameManager gameManager;
+        [SerializeField]
+        private AIManager aiManager;
 
         private void Start()
         {
@@ -38,6 +40,11 @@ namespace DnBGame {
         public GameManager GetGameManager()
         {
             return gameManager;
+        }
+
+        public AIManager GetAIManager()
+        {
+            return aiManager;
         }
     }
 }

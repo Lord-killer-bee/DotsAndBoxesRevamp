@@ -17,5 +17,9 @@ namespace DnBGame
             throw new System.NotImplementedException();
         }
 
+        public void OnTrigger()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

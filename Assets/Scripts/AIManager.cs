@@ -10,19 +10,15 @@ namespace DnBGame {
         private Dictionary<GameEnums.EGameDifficultyMode, GameStructs.AIAlgorithmPackage> m_DifficultyToAlgorithmMap = new Dictionary<GameEnums.EGameDifficultyMode, GameStructs.AIAlgorithmPackage>();
 
 		private GameManager m_gameManager;
-       
-        private Player m_AIPlayer;
 
         void Awake()
         {
-            GameEventManager.PlayersCreated += CheckIfAIShouldBeSetUp;
             GameEventManager.ReferencesRegistered += GetReferences;
-            GameEventManager.PlayerTurnsUpdated += CheckIfAICanPlaceLine;
+            //GameEventManager.PlayerTurnsUpdated += CheckIfAICanPlaceLine;
         }
 
         private void Start()
         {
-            GetAIPlayer();
             SetUpDifficultyToAlgorithmsMap();
         }
 
@@ -30,12 +26,6 @@ namespace DnBGame {
 		{
 			m_gameManager = ReferenceRegistry.instance.GetGameManager();
 		}
-
-
-		private void GetAIPlayer()
-        {
-            
-        }
 
         private void SetUpDifficultyToAlgorithmsMap()
         {
@@ -58,20 +48,12 @@ namespace DnBGame {
             });
         }     
 
-        void CheckIfAIShouldBeSetUp()
+        public AIPlayer CreateAIPlayer(GameEnums.EGameDifficultyMode difficultyMode, string name, Color color)
         {
+            IAIBehaviour tier1AI = AIFactory.CreateInstance(m_DifficultyToAlgorithmMap[difficultyMode].tier1Algorithm);
+            IAIBehaviour tier2AI = AIFactory.CreateInstance(m_DifficultyToAlgorithmMap[difficultyMode].tier2Algorithm);
 
-        }
-
-        private void SetUpAI(GameEnums.EGameDifficultyMode difficultyMode)
-        {
-
-        }
-
-
-        private void CheckIfAICanPlaceLine()
-        {
-            
+           return NonMonoObjectFactory<AIPlayer>.CreateInstance(() => new AIPlayer(name, color, GameEnums.EPlayerType.PLAYER_AI, tier1AI, tier2AI));
         }
 
     }

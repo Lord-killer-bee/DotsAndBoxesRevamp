@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Logger;
+using System;
 
 namespace DnBGame
 {
@@ -16,6 +17,8 @@ namespace DnBGame
 
 		private Player m_Player_1, m_Player_2;
 
+        private AIManager aiManager;
+
 		public Player activePlayer { get;  private set;}
 		public Player inactivePlayer { get; private set; }
 
@@ -27,11 +30,17 @@ namespace DnBGame
 
 			GameEventManager.LevelCreated += CreatePlayers;
 			GameEventManager.SwitchPlayers += SwitchPlayers;
+            GameEventManager.ReferencesRegistered += GetReferences;
 		}
 
-		void SetInitiatingPlayer()
+        private void GetReferences()
+        {
+            aiManager = ReferenceRegistry.instance.GetAIManager();
+        }
+
+        void SetInitiatingPlayer()
 		{
-			int temp = Random.Range(0, 1);
+			int temp = UnityEngine.Random.Range(0, 1);
 
 			if(temp == 0)
 			{
@@ -67,8 +76,8 @@ namespace DnBGame
 			activePlayer.SetPlayerTurn(true);
 			inactivePlayer.SetPlayerTurn(false);
 
-            GameEventManager.TriggerPlayerTurnsUpdated();
-		}
+            //GameEventManager.TriggerPlayerTurnsUpdated();
+        }
 
 		void CreatePlayers()
 		{
@@ -86,8 +95,9 @@ namespace DnBGame
 
 					m_Player1Type = GameEnums.EPlayerType.PLAYER_1;
 					m_Player2Type = GameEnums.EPlayerType.PLAYER_AI;
+
 					m_Player_1 = NonMonoObjectFactory<Player>.CreateInstance(() => new Player("Player 1", new Color(1, 0, 0, 1), m_Player1Type));
-					m_Player_2 = NonMonoObjectFactory<AIPlayer>.CreateInstance(() => new AIPlayer("Player 2", new Color(0, 0, 1, 1), m_Player2Type));
+                    m_Player_2 = aiManager.CreateAIPlayer(difficultyMode, "Player 2", new Color(0, 0, 1, 1));
 
 					break;
 				case GameEnums.EGameMode.AIvAI:
@@ -95,15 +105,16 @@ namespace DnBGame
 					m_Player1Type = GameEnums.EPlayerType.PLAYER_AI;
 					m_Player2Type = GameEnums.EPlayerType.PLAYER_AI;
 
-					break;
-			}
+                    m_Player_1 = aiManager.CreateAIPlayer(difficultyMode, "Player 1", new Color(1, 0, 0, 1));
+                    m_Player_2 = aiManager.CreateAIPlayer(difficultyMode, "Player 2", new Color(0, 0, 1, 1));
 
-			
+                    break;
+			}
 
 			SetInitiatingPlayer();
 
             GameEventManager.TriggerPlayersCreated();
-		}
-		
+		}	
+
 	}
 }

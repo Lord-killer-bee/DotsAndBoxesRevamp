@@ -51,7 +51,7 @@ namespace DnBGame
             return m_IsPlayerTurn;
         }
 
-        public void SetPlayerTurn(bool status)
+        public virtual void SetPlayerTurn(bool status)
         {
             m_IsPlayerTurn = status;
 			GameLogger.LogMessage(m_Name + " Turn: " + status);

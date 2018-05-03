@@ -8,7 +8,9 @@ namespace DnBGame
     {
 
         void OnEnter();
+        void OnTrigger();
         void OnExit();
+        bool IsAIInitialized();
 
     }
 }

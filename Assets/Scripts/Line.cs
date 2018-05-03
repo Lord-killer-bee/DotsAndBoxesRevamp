@@ -56,7 +56,7 @@ namespace DnBGame
             m_IsOpen = false;
 			AssignColorToLine(ReferenceRegistry.instance.GetGameManager().activePlayer.GetPlayerColor());
 			GameEventManager.TriggerLinePlaced(m_lineID);
-
+            
 			SetLineToActive();
 		}
 
@@ -85,6 +85,11 @@ namespace DnBGame
 			highlightImage.SetActive(true);
 			m_JustActive = true;
 		}
+
+        public void SimulateClick()
+        {
+            m_ClickableButton.onClick.Invoke();
+        }
 
         public void SetLineInactive()
         {
